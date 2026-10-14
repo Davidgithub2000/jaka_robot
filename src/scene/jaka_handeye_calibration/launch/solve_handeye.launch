@@ -1,0 +1,17 @@
+<launch>
+  <arg name="arm" default="left"/>
+  <arg name="samples_file" default="$(env HOME)/jaka_handeye_calibration/$(arg arm)/samples.yaml"/>
+  <arg name="result_file" default="$(env HOME)/jaka_handeye_calibration/$(arg arm)/handeye_result.yaml"/>
+  <arg name="parent_frame" default="$(arg arm)_tool0"/>
+  <arg name="child_frame" default="$(arg arm)_camera_color_optical_frame"/>
+
+  <node pkg="jaka_handeye_calibration" type="solve_handeye.py" name="$(arg arm)_handeye_solver" output="screen">
+    <param name="arm_name" value="$(arg arm)"/>
+    <param name="samples_file" value="$(arg samples_file)"/>
+    <param name="result_file" value="$(arg result_file)"/>
+    <param name="parent_frame" value="$(arg parent_frame)"/>
+    <param name="child_frame" value="$(arg child_frame)"/>
+    <param name="method" value="TSAI"/>
+    <param name="min_samples" value="12"/>
+  </node>
+</launch>

@@ -1,0 +1,6 @@
+board:
+  type: chessboard
+  description: GP290 12x9-20 board. OpenCV uses inner corners.
+  squares: [12, 9]
+  pattern_size: [11, 8]
+  square_size_m: 0.020

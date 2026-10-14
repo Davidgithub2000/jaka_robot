@@ -1,0 +1,12 @@
+<launch>
+  <arg name="serial_no" default=""/>
+  <arg name="show_window" default="true"/>
+
+  <include file="$(find jaka_d435i_camera)/launch/d435i_camera.launch">
+    <arg name="camera_name" value="right"/>
+    <arg name="serial_no" value="$(arg serial_no)"/>
+    <arg name="namespace" value="/right_camera"/>
+    <arg name="frame_id" value="right_camera_color_optical_frame"/>
+    <arg name="show_window" value="$(arg show_window)"/>
+  </include>
+</launch>

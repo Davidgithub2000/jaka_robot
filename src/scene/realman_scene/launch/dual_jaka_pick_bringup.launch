@@ -1,0 +1,48 @@
+<launch>
+  <arg name="left_ip" default="192.168.1.181"/>
+  <arg name="right_ip" default="192.168.1.188"/>
+  <arg name="left_target_topic" default="/left_arm/custom_arm_data"/>
+  <arg name="right_target_topic" default="/right_arm/custom_arm_data"/>
+  <arg name="start_pick_coordinator" default="true"/>
+  <arg name="station_done_topic" default="/dual_picker/station_done"/>
+  <arg name="station_status_topic" default="/dual_picker/station_status"/>
+  <arg name="station_start_topic" default="/dual_picker/station_start"/>
+  <arg name="vision_done_topic" default="/dual_picker/vision_done"/>
+
+  <include file="$(find jaka_driver)/launch/dual_jaka_driver.launch">
+    <arg name="left_ip" value="$(arg left_ip)"/>
+    <arg name="right_ip" value="$(arg right_ip)"/>
+  </include>
+
+  <include file="$(find realman_scene)/launch/dual_jaka_wrapper.launch">
+    <arg name="left_target_topic" value="$(arg left_target_topic)"/>
+    <arg name="right_target_topic" value="$(arg right_target_topic)"/>
+  </include>
+
+  <!--
+    站点协调器：统计左右臂收到的目标和采摘结果。
+    require_vision_done=true 表示必须等视觉确认当前点位无剩余目标后，才发布 station_done。
+  -->
+  <node if="$(arg start_pick_coordinator)"
+        pkg="realman_scene"
+        type="dual_pick_coordinator.py"
+        name="dual_pick_coordinator"
+        output="screen">
+    <param name="left_target_topic" type="str" value="$(arg left_target_topic)"/>
+    <param name="right_target_topic" type="str" value="$(arg right_target_topic)"/>
+    <param name="left_result_topic" type="str" value="/left_picker/target_result"/>
+    <param name="right_result_topic" type="str" value="/right_picker/target_result"/>
+    <param name="station_done_topic" type="str" value="$(arg station_done_topic)"/>
+    <param name="station_status_topic" type="str" value="$(arg station_status_topic)"/>
+    <param name="station_start_topic" type="str" value="$(arg station_start_topic)"/>
+    <param name="vision_done_topic" type="str" value="$(arg vision_done_topic)"/>
+    <param name="auto_start_on_target" type="bool" value="true"/>
+    <param name="require_vision_done" type="bool" value="true"/>
+    <param name="allow_empty_station_done" type="bool" value="true"/>
+    <param name="done_requires_all_success" type="bool" value="false"/>
+    <param name="require_arm_safe" type="bool" value="true"/>
+    <param name="target_quiet_s" type="double" value="3.0"/>
+    <param name="done_hold_s" type="double" value="0.5"/>
+    <param name="check_rate_hz" type="double" value="10.0"/>
+  </node>
+</launch>

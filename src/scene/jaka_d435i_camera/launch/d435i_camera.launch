@@ -1,0 +1,24 @@
+<launch>
+  <arg name="camera_name" default="single"/>
+  <arg name="serial_no" default=""/>
+  <arg name="namespace" default="/camera"/>
+  <arg name="frame_id" default="camera_color_optical_frame"/>
+  <arg name="width" default="1280"/>
+  <arg name="height" default="720"/>
+  <arg name="fps" default="30"/>
+  <arg name="show_window" default="false"/>
+  <arg name="publish_depth" default="false"/>
+
+  <node pkg="jaka_d435i_camera" type="d435i_camera_node.py" name="$(arg camera_name)_d435i_camera" output="screen">
+    <param name="camera_name" value="$(arg camera_name)"/>
+    <param name="config_file" value="$(find jaka_d435i_camera)/config/cameras.yaml"/>
+    <param name="serial_no" value="$(arg serial_no)"/>
+    <param name="namespace" value="$(arg namespace)"/>
+    <param name="frame_id" value="$(arg frame_id)"/>
+    <param name="width" value="$(arg width)"/>
+    <param name="height" value="$(arg height)"/>
+    <param name="fps" value="$(arg fps)"/>
+    <param name="show_window" value="$(arg show_window)"/>
+    <param name="publish_depth" value="$(arg publish_depth)"/>
+  </node>
+</launch>

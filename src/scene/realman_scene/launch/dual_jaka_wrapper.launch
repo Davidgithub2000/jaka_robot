@@ -1,0 +1,185 @@
+<launch>
+  <arg name="left_driver_ns" default="/left_arm/jaka_driver"/>
+  <arg name="right_driver_ns" default="/right_arm/jaka_driver"/>
+
+  <arg name="left_target_topic" default="/left_arm/custom_arm_data"/>
+  <arg name="right_target_topic" default="/right_arm/custom_arm_data"/>
+
+  <arg name="vision_server_ip" default="192.168.1.66"/>
+  <arg name="vision_server_port" default="2002"/>
+  <arg name="gripper_server_ip" default="192.168.1.88"/>
+  <arg name="gripper_server_port" default="2000"/>
+  <arg name="gripper_cmd_topic" default="/multi_gripper/cmd"/>
+
+  <group ns="left_picker">
+    <node pkg="realman_scene" type="robot_vision_wrapper_main.py" name="robot_vision_wrapper" output="screen">
+      <param name="driver_ns" type="str" value="$(arg left_driver_ns)"/>
+      <param name="wrapper_input_topic" type="str" value="/left_picker/vision/input"/>
+      <param name="custom_arm_data_topic" type="str" value="$(arg left_target_topic)"/>
+      <param name="pick_result_topic" type="str" value="/left_picker/target_result"/>
+      <param name="task_param_name" type="str" value="/usr_task_left"/>
+      <param name="vision_enable_param" type="str" value="/vision_enable_left"/>
+      <param name="arm_is_right_pos_param" type="str" value="/left_picker/ArmIsRightPos"/>
+      <param name="initial_is_right_pos" type="bool" value="false"/>
+      <param name="infer_target_side_from_base_y" type="bool" value="false"/>
+      <param name="auto_switch_side_for_target" type="bool" value="false"/>
+      <param name="use_custom_workspace" type="bool" value="true"/>
+      <param name="workspace_x_min" type="double" value="-100"/>
+      <param name="workspace_x_max" type="double" value="600"/>
+      <param name="workspace_y_min" type="double" value="-920"/>
+      <param name="workspace_y_max" type="double" value="-350"/>
+      <param name="workspace_z_min" type="double" value="80"/>
+      <param name="workspace_z_max" type="double" value="990"/>
+      <param name="enable_target_dedup" type="bool" value="true"/>
+      <param name="target_dedup_radius_mm" type="double" value="30.0"/>
+      <param name="target_dedup_ttl_s" type="double" value="60.0"/>
+      <param name="target_dedup_max_len" type="int" value="100"/>
+      <param name="use_usr_task_gate" type="bool" value="false"/>
+      <param name="set_usr_task_pause_on_start" type="bool" value="false"/>
+
+      <param name="vision_server_ip" type="str" value="$(arg vision_server_ip)"/>
+      <param name="vision_server_port" type="int" value="$(arg vision_server_port)"/>
+      <param name="gripper_server_ip" type="str" value="$(arg gripper_server_ip)"/>
+      <param name="gripper_server_port" type="int" value="$(arg gripper_server_port)"/>
+      <param name="isEyeInHand" type="bool" value="true"/>
+      <param name="object_compensation_XYZ" type="str" value="0, -50, 0"/>
+      <param name="use_input_RPY" type="bool" value="true"/>
+      <param name="object_rotate_RPY" type="str" value="0,0,0"/>
+      <param name="object_pre_pose_offset_XYZRPY" type="str" value="0, 60, -60, 0, 0, 0"/>
+      <param name="pre_grasp_offset_mm" type="double" value="150.0"/>
+      <param name="recover_to_init_on_pick_failure" type="bool" value="true"/>
+      <param name="arm_safe_joint_tolerance_rad" type="double" value="0.08"/>
+      <param name="joint_state_max_age_s" type="double" value="1.0"/>
+      <param name="ensure_init_on_startup" type="bool" value="true"/>
+      <param name="ensure_init_before_each_pick" type="bool" value="true"/>
+      <param name="startup_joint_state_wait_timeout_s" type="double" value="5.0"/>
+      <param name="startup_init_retry_s" type="double" value="1.0"/>
+      <param name="auto_place" type="bool" value="false"/>
+
+      <param name="ref_joint_left" type="str" value="-4.758772769409778, 0.9829304971139, 1.6823734518474442, 3.598814925549256, 1.601646739332, -0.027245810889344444"/>
+      <param name="ref_joint_right" type="str" value="1.625, 1.417, -1.237, 0.085, -1.557, 0"/>
+      <param name="place_joint_left" type="str" value="-3.0239483347102665, 0.8619378177113333, 1.9869285142034, 3.5527356160887558, 1.5772468622724114, -0.04157880352807777"/>
+      <param name="place_joint_right" type="str" value="2.777, 2.077, -2.383, -0.372, -1.361, 0"/>
+      <param name="init_joint_pos_left" type="str" value="-4.7547579885999, 0.4722707286361778, 1.8983172769265666, 3.8926920637236555, 1.5505820714811442, -0.027233768117711114"/>
+      <param name="init_joint_pos_right" type="str" value="1.604, 2.91, -2.209, -0.669, -1.59, 0"/>
+      <param name="mid_joint_trans" type="str" value="0.2, 2.65, -1.94, -0.59, -1.6, 0"/>
+      <param name="joint_param_unit" type="str" value="rad"/>
+
+      <param name="robot_ready_timeout_s" type="double" value="3.0"/>
+      <param name="robot_state_timeout_s" type="double" value="1.5"/>
+      <param name="motion_done_timeout_s" type="double" value="30.0"/>
+      <param name="motion_stop_confirm_count" type="int" value="3"/>
+      <param name="motion_start_grace_s" type="double" value="0.3"/>
+      <param name="motion_state_poll_s" type="double" value="0.02"/>
+      <param name="motion_service_timeout_s" type="double" value="1.0"/>
+
+      <param name="vision_accumulate_window_s" type="double" value="0.0"/>
+      <param name="vision_target_buffer_max_age_s" type="double" value="2.0"/>
+      <param name="vision_target_buffer_max_len" type="int" value="50"/>
+      <param name="vision_target_min_confirm_frames" type="int" value="3"/>
+      <param name="vision_target_cluster_radius_mm" type="double" value="60.0"/>
+      <param name="vision_sample_poll_s" type="double" value="0.02"/>
+      <param name="allow_pick_without_confirmed_target" type="bool" value="true"/>
+
+      <param name="gripper_cmd_topic" type="str" value="$(arg gripper_cmd_topic)"/>
+      <param name="jaka_gripper_id" type="int" value="1"/>
+      <param name="gripper_action_wait_s" type="double" value="1.0"/>
+      <param name="gripper_wait_subscriber_timeout_s" type="double" value="3.0"/>
+      <param name="require_gripper_subscriber" type="bool" value="true"/>
+      <param name="gripper_cmd_repeat" type="int" value="3"/>
+      <param name="gripper_cmd_repeat_interval_s" type="double" value="0.05"/>
+      <param name="gripper_feedback_topic" type="str" value="/multi_gripper/interpreted_state"/>
+      <param name="use_gripper_feedback_wait" type="bool" value="true"/>
+      <param name="gripper_feedback_timeout_s" type="double" value="3.0"/>
+      <param name="gripper_feedback_poll_s" type="double" value="0.02"/>
+      <param name="gripper_close_success_states" type="str" value="close"/>
+      <param name="gripper_open_success_states" type="str" value="open,ready"/>
+    </node>
+  </group>
+
+  <group ns="right_picker">
+    <node pkg="realman_scene" type="robot_vision_wrapper_main.py" name="robot_vision_wrapper" output="screen">
+      <param name="driver_ns" type="str" value="$(arg right_driver_ns)"/>
+      <param name="wrapper_input_topic" type="str" value="/right_picker/vision/input"/>
+      <param name="custom_arm_data_topic" type="str" value="$(arg right_target_topic)"/>
+      <param name="pick_result_topic" type="str" value="/right_picker/target_result"/>
+      <param name="task_param_name" type="str" value="/usr_task_right"/>
+      <param name="vision_enable_param" type="str" value="/vision_enable_right"/>
+      <param name="arm_is_right_pos_param" type="str" value="/right_picker/ArmIsRightPos"/>
+      <param name="initial_is_right_pos" type="bool" value="true"/>
+      <param name="infer_target_side_from_base_y" type="bool" value="false"/>
+      <param name="auto_switch_side_for_target" type="bool" value="false"/>
+      <param name="use_custom_workspace" type="bool" value="true"/>
+      <param name="workspace_x_min" type="double" value="-100"/>
+      <param name="workspace_x_max" type="double" value="600"/>
+      <param name="workspace_y_min" type="double" value="-920"/>
+      <param name="workspace_y_max" type="double" value="-350"/>
+      <param name="workspace_z_min" type="double" value="80"/>
+      <param name="workspace_z_max" type="double" value="990"/>
+      <param name="enable_target_dedup" type="bool" value="true"/>
+      <param name="target_dedup_radius_mm" type="double" value="30.0"/>
+      <param name="target_dedup_ttl_s" type="double" value="60.0"/>
+      <param name="target_dedup_max_len" type="int" value="100"/>
+      <param name="use_usr_task_gate" type="bool" value="false"/>
+      <param name="set_usr_task_pause_on_start" type="bool" value="false"/>
+
+      <param name="vision_server_ip" type="str" value="$(arg vision_server_ip)"/>
+      <param name="vision_server_port" type="int" value="$(arg vision_server_port)"/>
+      <param name="gripper_server_ip" type="str" value="$(arg gripper_server_ip)"/>
+      <param name="gripper_server_port" type="int" value="$(arg gripper_server_port)"/>
+      <param name="isEyeInHand" type="bool" value="true"/>
+      <param name="object_compensation_XYZ" type="str" value="0, -50, 0"/>
+      <param name="use_input_RPY" type="bool" value="true"/>
+      <param name="object_rotate_RPY" type="str" value="0,0,0"/>
+      <param name="object_pre_pose_offset_XYZRPY" type="str" value="0, 60, -60, 0, 0, 0"/>
+      <param name="pre_grasp_offset_mm" type="double" value="150.0"/>
+      <param name="recover_to_init_on_pick_failure" type="bool" value="true"/>
+      <param name="arm_safe_joint_tolerance_rad" type="double" value="0.08"/>
+      <param name="joint_state_max_age_s" type="double" value="1.0"/>
+      <param name="ensure_init_on_startup" type="bool" value="true"/>
+      <param name="ensure_init_before_each_pick" type="bool" value="true"/>
+      <param name="startup_joint_state_wait_timeout_s" type="double" value="5.0"/>
+      <param name="startup_init_retry_s" type="double" value="1.0"/>
+      <param name="auto_place" type="bool" value="false"/>
+
+      <param name="ref_joint_left" type="str" value="-1.608, 1.222, -0.878, 0.021, -1.511, 0"/>
+      <param name="ref_joint_right" type="str" value="-4.690062474056411, 1.0086604895737443, 1.7334508606016221, 3.5203571410226995, 1.622495045957289, 0.014932164160722223"/>
+      <param name="place_joint_left" type="str" value="-3.281, 2.083, -2.234, -0.405, -1.750, 0"/>
+      <param name="place_joint_right" type="str" value="-2.9664912240501002, 0.8559813581417334, 2.0900415174547553, 3.4160344500874222, 1.5332605516152, 0.01492012138908889"/>
+      <param name="init_joint_pos_left" type="str" value="-1.615, 2.91, -2.209, -0.669, -1.59, 0"/>
+      <param name="init_joint_pos_right" type="str" value="-4.695910723214234, 0.4750028670006444, 1.9166896595172114, 3.875293923904856, 1.5664328024115224, 0.014932164160722223"/>
+      <param name="mid_joint_trans" type="str" value="0.2, 2.65, -1.94, -0.59, -1.6, 0"/>
+      <param name="joint_param_unit" type="str" value="rad"/>
+
+      <param name="robot_ready_timeout_s" type="double" value="3.0"/>
+      <param name="robot_state_timeout_s" type="double" value="1.5"/>
+      <param name="motion_done_timeout_s" type="double" value="30.0"/>
+      <param name="motion_stop_confirm_count" type="int" value="3"/>
+      <param name="motion_start_grace_s" type="double" value="0.3"/>
+      <param name="motion_state_poll_s" type="double" value="0.02"/>
+      <param name="motion_service_timeout_s" type="double" value="1.0"/>
+
+      <param name="vision_accumulate_window_s" type="double" value="0.0"/>
+      <param name="vision_target_buffer_max_age_s" type="double" value="2.0"/>
+      <param name="vision_target_buffer_max_len" type="int" value="50"/>
+      <param name="vision_target_min_confirm_frames" type="int" value="3"/>
+      <param name="vision_target_cluster_radius_mm" type="double" value="60.0"/>
+      <param name="vision_sample_poll_s" type="double" value="0.02"/>
+      <param name="allow_pick_without_confirmed_target" type="bool" value="true"/>
+
+      <param name="gripper_cmd_topic" type="str" value="$(arg gripper_cmd_topic)"/>
+      <param name="jaka_gripper_id" type="int" value="2"/>
+      <param name="gripper_action_wait_s" type="double" value="1.0"/>
+      <param name="gripper_wait_subscriber_timeout_s" type="double" value="3.0"/>
+      <param name="require_gripper_subscriber" type="bool" value="true"/>
+      <param name="gripper_cmd_repeat" type="int" value="3"/>
+      <param name="gripper_cmd_repeat_interval_s" type="double" value="0.05"/>
+      <param name="gripper_feedback_topic" type="str" value="/multi_gripper/interpreted_state"/>
+      <param name="use_gripper_feedback_wait" type="bool" value="true"/>
+      <param name="gripper_feedback_timeout_s" type="double" value="3.0"/>
+      <param name="gripper_feedback_poll_s" type="double" value="0.02"/>
+      <param name="gripper_close_success_states" type="str" value="close"/>
+      <param name="gripper_open_success_states" type="str" value="open,ready"/>
+    </node>
+  </group>
+</launch>

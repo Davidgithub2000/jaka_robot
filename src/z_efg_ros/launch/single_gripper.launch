@@ -1,0 +1,13 @@
+<launch>
+    <node name="single_gripper_node" pkg="z_efg_ros" type="single_gripper_node" output="screen">
+        <param name="port" value="/dev/grip_485"/>
+        <param name="baud" value="115200"/>
+        <param name="slave_id" value="1"/>
+        <param name="speed_open" value="80.0"/>
+        <param name="speed_close" value="80.0"/>
+        <param name="current_open" value="0.3"/>
+        <param name="current_close" value="0.5"/>
+        <param name="pos_open" value="50.0"/>
+        <param name="pos_close" value="0.0"/>
+    </node>
+</launch>

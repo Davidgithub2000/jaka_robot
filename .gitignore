@@ -1,0 +1,9 @@
+.idea/
+build/
+devel/
+logs/
+__pycache__/
+*.pyc
+*.swp
+*.zip
+*.so

@@ -1,0 +1,24 @@
+cameras:
+  single:
+    serial_no: ""
+    namespace: /camera
+    frame_id: camera_color_optical_frame
+    width: 1280
+    height: 720
+    fps: 30
+
+  left:
+    serial_no: ""
+    namespace: /left_camera
+    frame_id: left_camera_color_optical_frame
+    width: 1280
+    height: 720
+    fps: 30
+
+  right:
+    serial_no: ""
+    namespace: /right_camera
+    frame_id: right_camera_color_optical_frame
+    width: 1280
+    height: 720
+    fps: 30

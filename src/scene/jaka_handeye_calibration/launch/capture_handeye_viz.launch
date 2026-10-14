@@ -1,0 +1,24 @@
+<launch>
+  <arg name="arm" default="left"/>
+  <arg name="driver_ns" default="/$(arg arm)_arm/jaka_driver"/>
+  <arg name="image_topic" default="/camera/color/image_raw"/>
+  <arg name="camera_info_topic" default="/camera/color/camera_info"/>
+  <arg name="tool_position_topic" default="$(arg driver_ns)/tool_position"/>
+  <arg name="samples_file" default="$(env HOME)/jaka_handeye_calibration/$(arg arm)/samples.yaml"/>
+  <arg name="target_samples" default="20"/>
+
+  <node pkg="jaka_handeye_calibration" type="capture_handeye_samples_viz.py" name="$(arg arm)_handeye_capture_viz" output="screen">
+    <rosparam command="load" file="$(find jaka_handeye_calibration)/config/gp290_12x9_20.yaml"/>
+    <param name="arm_name" value="$(arg arm)"/>
+    <param name="image_topic" value="$(arg image_topic)"/>
+    <param name="camera_info_topic" value="$(arg camera_info_topic)"/>
+    <param name="tool_position_topic" value="$(arg tool_position_topic)"/>
+    <param name="samples_file" value="$(arg samples_file)"/>
+    <param name="target_samples" value="$(arg target_samples)"/>
+    <param name="tool_position_pos_unit" value="mm"/>
+    <param name="tool_position_rpy_unit" value="deg"/>
+    <param name="tool_position_rotation_type" value="euler"/>
+    <param name="tool_position_euler_order" value="xyz"/>
+    <param name="tool_position_euler_intrinsic" value="false"/>
+  </node>
+</launch>

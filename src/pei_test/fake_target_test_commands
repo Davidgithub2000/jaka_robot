@@ -1,0 +1,98 @@
+双臂假目标测试命令流程
+
+说明：
+1. 先确认两台 JAKA 机械臂已经上电、使能。
+2. 假目标脚本是 shell 脚本，必须用 bash 启动，不要用 python3 直接运行。
+3. 建议左右臂分开测试，不要同时发布两个假目标。
+记得conda deactivate
+
+终端 1：启动 roscore
+
+roscore
+
+
+终端 2：启动双臂驱动和采摘 wrapper
+
+cd ~/ws_double_jaka
+source devel/setup.bash
+roslaunch realman_scene dual_jaka_pick_bringup.launch
+
+
+终端 3：可选检查话题订阅
+
+rostopic info /left_arm/custom_arm_data
+rostopic info /right_arm/custom_arm_data
+
+正常应看到：
+
+/left_picker/robot_vision_wrapper
+/right_picker/robot_vision_wrapper
+
+
+终端 3：可选检查机械臂状态
+
+rostopic echo -n 1 /left_arm/jaka_driver/robot_states
+rostopic echo -n 1 /right_arm/jaka_driver/robot_states
+
+rostopic echo -n 1 /left_arm/jaka_driver/tool_position
+rostopic echo -n 1 /right_arm/jaka_driver/tool_position
+
+
+测试右臂 188 假目标
+
+bash ~/ws_double_jaka/src/pei_test/publish_right_fake_target_once
+
+
+测试左臂 181 假目标
+
+bash ~/ws_double_jaka/src/pei_test/publish_left_fake_target_once
+
+
+假目标脚本发布的话题：
+
+右臂：
+/right_arm/custom_arm_data
+
+左臂：
+/left_arm/custom_arm_data
+
+
+视觉目标消息格式：
+
+std_msgs/Float32MultiArray
+data: [p1_x, p1_y, p1_z, p2_x, p2_y, p2_z]
+
+坐标要求：
+1. 对应机械臂当前 TCP 坐标系。
+2. 单位是 m。
+3. p1/p2 是同一个目标上的两个三维点。
+4. 果梗方向按 p2 -> p1 计算。
+
+
+如果报错没有订阅者：
+
+1. 确认终端 2 的 dual_jaka_pick_bringup.launch 已经启动。
+2. 运行：
+   rostopic info /right_arm/custom_arm_data
+   rostopic info /left_arm/custom_arm_data
+3. 确认能看到对应 wrapper 订阅者。
+
+
+如果目标被拒绝：
+
+查看终端 2 日志，重点找：
+
+TCP->base(m/rad)
+目标转换到基坐标后不在可达工作空间内
+calculate_grasp_pose failed
+目标逆运动学求解失败
+
+
+当前两个机械臂工作空间：
+
+转换到各自机械臂 base 坐标后：
+
+x: -100 ~ 600 mm
+y: -820 ~ -400 mm
+z: 80 ~ 810 mm
+

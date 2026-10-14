@@ -1,0 +1,144 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+source /opt/ros/noetic/setup.bash
+source ~/ws_double_jaka/devel/setup.bash
+
+python3 - <<'PY'
+import os
+import time
+
+import numpy as np
+import rospy
+from geometry_msgs.msg import TwistStamped
+from scipy.spatial.transform import Rotation as R
+from std_msgs.msg import Bool, Float32MultiArray
+
+
+TOOL_TOPIC = "/left_arm/jaka_driver/tool_position"
+TARGET_TOPIC = "/left_arm/custom_arm_data"
+VISION_DONE_TOPIC = "/dual_picker/vision_done"
+
+# Build the fake fruit target near the current observation pose, then clamp it
+# into the conservative negative-Y picking workspace. If the current observation
+# pose is outside the picking workspace, the target moves to the nearest safe
+# point inside that workspace instead of publishing an invalid point.
+TARGET_BASE_OFFSET_MM = np.array([0.0, -50.0, 0.0], dtype=float)
+STEM_VECTOR_MM = np.array([-40.0, 20.0, 25.0], dtype=float)
+
+WORKSPACE_MIN = np.array([-100.0, -820.0, 80.0], dtype=float)
+WORKSPACE_MAX = np.array([600.0, -400.0, 810.0], dtype=float)
+SAFE_MID_MIN = np.array([-50.0, -740.0, 540.0], dtype=float)
+SAFE_MID_MAX = np.array([450.0, -460.0, 720.0], dtype=float)
+
+
+def rot_to_matrix(rotation):
+    return rotation.as_matrix() if hasattr(rotation, "as_matrix") else rotation.as_dcm()
+
+
+def in_workspace(point_mm):
+    return bool(np.all(point_mm >= WORKSPACE_MIN) and np.all(point_mm <= WORKSPACE_MAX))
+
+
+def normalize_tool_position(tool_msg):
+    raw_xyz = np.array(
+        [
+            tool_msg.twist.linear.x,
+            tool_msg.twist.linear.y,
+            tool_msg.twist.linear.z,
+        ],
+        dtype=float,
+    )
+    raw_rpy = np.array(
+        [
+            tool_msg.twist.angular.x,
+            tool_msg.twist.angular.y,
+            tool_msg.twist.angular.z,
+        ],
+        dtype=float,
+    )
+
+    # JAKA tool_position is normally mm + deg. Keep this robust if it is already m + rad.
+    xyz_m = raw_xyz / 1000.0 if np.max(np.abs(raw_xyz)) > 5.0 else raw_xyz
+    rpy_rad = np.deg2rad(raw_rpy) if np.max(np.abs(raw_rpy)) > (2.0 * np.pi) else raw_rpy
+    return xyz_m, rpy_rad
+
+
+def base_mm_to_tcp_m(point_base_mm, t_base_tcp_m, r_base_tcp):
+    point_base_m = point_base_mm / 1000.0
+    return np.dot(r_base_tcp.T, point_base_m - t_base_tcp_m)
+
+
+def build_base_target_near_current_pose(t_base_tcp_m, r_base_tcp):
+    tcp_origin_mm = t_base_tcp_m * 1000.0
+
+    candidate_mid_base_mm = tcp_origin_mm + TARGET_BASE_OFFSET_MM
+    p_mid_base_mm = np.minimum(
+        np.maximum(candidate_mid_base_mm, SAFE_MID_MIN),
+        SAFE_MID_MAX,
+    )
+
+    half_stem = STEM_VECTOR_MM / 2.0
+    p1_base_mm = p_mid_base_mm + half_stem
+    p2_base_mm = p_mid_base_mm - half_stem
+    return p1_base_mm, p2_base_mm, p_mid_base_mm, candidate_mid_base_mm
+
+
+def wait_for_subscriber(pub, topic, timeout_s=5.0):
+    deadline = time.time() + timeout_s
+    while pub.get_num_connections() == 0 and time.time() < deadline and not rospy.is_shutdown():
+        rospy.sleep(0.05)
+    if pub.get_num_connections() == 0:
+        raise RuntimeError("No subscriber on {}".format(topic))
+
+
+def main():
+    rospy.init_node("publish_left_fake_target_once", anonymous=True)
+
+    tool = rospy.wait_for_message(TOOL_TOPIC, TwistStamped, timeout=5.0)
+    t_base_tcp_m, rpy_rad = normalize_tool_position(tool)
+    r_base_tcp = rot_to_matrix(R.from_euler("xyz", rpy_rad, degrees=False))
+
+    p1_base_mm, p2_base_mm, p_mid_base_mm, candidate_mid_base_mm = (
+        build_base_target_near_current_pose(t_base_tcp_m, r_base_tcp)
+    )
+
+    if not in_workspace(p1_base_mm) or not in_workspace(p2_base_mm):
+        raise RuntimeError(
+            "Generated fake target is outside workspace: p1={}, p2={}".format(
+                p1_base_mm.tolist(),
+                p2_base_mm.tolist(),
+            )
+        )
+
+    p1_tcp_m = base_mm_to_tcp_m(p1_base_mm, t_base_tcp_m, r_base_tcp)
+    p2_tcp_m = base_mm_to_tcp_m(p2_base_mm, t_base_tcp_m, r_base_tcp)
+
+    pub = rospy.Publisher(TARGET_TOPIC, Float32MultiArray, queue_size=1)
+    wait_for_subscriber(pub, TARGET_TOPIC)
+
+    msg = Float32MultiArray()
+    msg.data = [float(v) for v in list(p1_tcp_m) + list(p2_tcp_m)]
+    pub.publish(msg)
+
+    rospy.loginfo("published LEFT fake target")
+    rospy.loginfo("candidate_mid_base_mm=%s", candidate_mid_base_mm.tolist())
+    rospy.loginfo("p_mid_base_mm=%s", p_mid_base_mm.tolist())
+    rospy.loginfo("p1_base_mm=%s p2_base_mm=%s", p1_base_mm.tolist(), p2_base_mm.tolist())
+    rospy.loginfo("target_base_offset_mm=%s", TARGET_BASE_OFFSET_MM.tolist())
+    rospy.loginfo("stem_vector_mm=%s", STEM_VECTOR_MM.tolist())
+    rospy.loginfo("tcp_pose_m_rad=%s", [float(v) for v in list(t_base_tcp_m) + list(rpy_rad)])
+    rospy.loginfo("p1_tcp_m=%s p2_tcp_m=%s", p1_tcp_m.tolist(), p2_tcp_m.tolist())
+
+    if os.environ.get("PUBLISH_VISION_DONE", "0").lower() in ("1", "true", "yes", "on"):
+        done_pub = rospy.Publisher(VISION_DONE_TOPIC, Bool, queue_size=1, latch=True)
+        rospy.sleep(0.2)
+        done_pub.publish(Bool(True))
+        rospy.loginfo("published %s=true", VISION_DONE_TOPIC)
+
+    rospy.sleep(0.5)
+
+
+if __name__ == "__main__":
+    main()
+PY

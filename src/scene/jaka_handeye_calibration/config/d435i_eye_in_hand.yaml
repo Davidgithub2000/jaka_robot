@@ -1,0 +1,30 @@
+common:
+  image_topic: /camera/color/image_raw
+  camera_info_topic: /camera/color/camera_info
+  camera_frame: camera_color_optical_frame
+  gripper_frame_suffix: tool0
+  output_root: $(env HOME)/jaka_handeye_calibration
+  tool_position_pos_unit: mm
+  tool_position_rpy_unit: deg
+  tool_position_rotation_type: euler
+  tool_position_euler_order: xyz
+  tool_position_euler_intrinsic: false
+  min_samples: 12
+
+left:
+  arm_name: left
+  driver_ns: /left_arm/jaka_driver
+  tool_position_topic: /left_arm/jaka_driver/tool_position
+  samples_file: $(env HOME)/jaka_handeye_calibration/left/samples.yaml
+  result_file: $(env HOME)/jaka_handeye_calibration/left/handeye_result.yaml
+  parent_frame: left_tool0
+  child_frame: left_camera_color_optical_frame
+
+right:
+  arm_name: right
+  driver_ns: /right_arm/jaka_driver
+  tool_position_topic: /right_arm/jaka_driver/tool_position
+  samples_file: $(env HOME)/jaka_handeye_calibration/right/samples.yaml
+  result_file: $(env HOME)/jaka_handeye_calibration/right/handeye_result.yaml
+  parent_frame: right_tool0
+  child_frame: right_camera_color_optical_frame

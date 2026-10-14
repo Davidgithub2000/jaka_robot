@@ -1,0 +1,30 @@
+<launch>
+  <arg name="left_driver_ns" default="/left_arm/jaka_driver"/>
+  <arg name="right_driver_ns" default="/right_arm/jaka_driver"/>
+  <arg name="left_image_topic" default="/left_camera/color/image_raw"/>
+  <arg name="left_camera_info_topic" default="/left_camera/color/camera_info"/>
+  <arg name="right_image_topic" default="/right_camera/color/image_raw"/>
+  <arg name="right_camera_info_topic" default="/right_camera/color/camera_info"/>
+
+  <group ns="left_handeye">
+    <include file="$(find jaka_handeye_calibration)/launch/capture_handeye.launch">
+      <arg name="arm" value="left"/>
+      <arg name="driver_ns" value="$(arg left_driver_ns)"/>
+      <arg name="image_topic" value="$(arg left_image_topic)"/>
+      <arg name="camera_info_topic" value="$(arg left_camera_info_topic)"/>
+      <arg name="tool_position_topic" value="$(arg left_driver_ns)/tool_position"/>
+      <arg name="samples_file" value="$(env HOME)/jaka_handeye_calibration/left/samples.yaml"/>
+    </include>
+  </group>
+
+  <group ns="right_handeye">
+    <include file="$(find jaka_handeye_calibration)/launch/capture_handeye.launch">
+      <arg name="arm" value="right"/>
+      <arg name="driver_ns" value="$(arg right_driver_ns)"/>
+      <arg name="image_topic" value="$(arg right_image_topic)"/>
+      <arg name="camera_info_topic" value="$(arg right_camera_info_topic)"/>
+      <arg name="tool_position_topic" value="$(arg right_driver_ns)/tool_position"/>
+      <arg name="samples_file" value="$(env HOME)/jaka_handeye_calibration/right/samples.yaml"/>
+    </include>
+  </group>
+</launch>

@@ -1,0 +1,19 @@
+<launch>
+  <arg name="serial_no" default=""/>
+  <arg name="driver_ns" default="/right_arm/jaka_driver"/>
+  <arg name="show_window" default="true"/>
+
+  <include file="$(find jaka_d435i_camera)/launch/right_d435i_camera.launch">
+    <arg name="serial_no" value="$(arg serial_no)"/>
+    <arg name="show_window" value="$(arg show_window)"/>
+  </include>
+
+  <include file="$(find jaka_handeye_calibration)/launch/capture_handeye.launch">
+    <arg name="arm" value="right"/>
+    <arg name="driver_ns" value="$(arg driver_ns)"/>
+    <arg name="image_topic" value="/right_camera/color/image_raw"/>
+    <arg name="camera_info_topic" value="/right_camera/color/camera_info"/>
+    <arg name="tool_position_topic" value="$(arg driver_ns)/tool_position"/>
+    <arg name="samples_file" value="$(env HOME)/jaka_handeye_calibration/right/samples.yaml"/>
+  </include>
+</launch>

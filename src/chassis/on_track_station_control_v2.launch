@@ -1,0 +1,77 @@
+﻿<launch>
+  <!--
+    Track-end QR/AprilTag behavior:
+    - The chassis controller owns motion and picking state.
+    - The camera detector only publishes /base/track_end_detected and /base/track_end_qr_detected.
+    - Use the agv_camera AprilTag path by default. Keep the old OpenCV QR detector available as a fallback.
+  -->
+  <arg name="start_track_end_apriltag_detector" default="true" />
+  <arg name="start_track_end_qr_detector" default="false" />
+  <arg name="track_end_qr_camera_device" default="/dev/video_at" />
+  <arg name="track_end_qr_required_text" default="" />
+  <arg name="track_end_tag_id" default="-1" />
+
+  <node pkg="chassis"
+        type="on_track_station_control"
+        name="on_track_station_control"
+        output="screen">
+
+    <param name="cmd_vel_topic" value="/cmd_vel" />
+    <param name="vision_enable_topic" value="/vision_enable" />
+    <param name="station_start_topic" value="/dual_picker/station_start" />
+    <param name="station_done_topic" value="/dual_picker/station_done" />
+    <param name="vision_go_next_topic" value="/vision_master/go_next_station" />
+    <param name="allow_vision_go_next_direct" value="false" />
+    <param name="base_state_topic" value="/base/task_state" />
+    <param name="emergency_stop_topic" value="/base/emergency_stop" />
+    <param name="track_end_detected_topic" value="/base/track_end_detected" />
+    <param name="track_end_qr_detected_topic" value="/base/track_end_qr_detected" />
+    <param name="manual_start_topic" value="/base/manual_start_station" />
+    <param name="left_target_topic" value="/left_arm/custom_arm_data" />
+    <param name="right_target_topic" value="/right_arm/custom_arm_data" />
+
+    <param name="pick_task_param" value="/pick_task" />
+    <param name="vision_enable_param" value="/vision_enable" />
+    <param name="vision_enable_left_param" value="/vision_enable_left" />
+    <param name="vision_enable_right_param" value="/vision_enable_right" />
+
+    <param name="move_speed" value="0.17" />
+    <param name="move_duration" value="2.0" />
+    <param name="max_track_distance_m" value="50.0" />
+    <param name="arm_safe_delay" value="1.0" />
+    <param name="stop_stable_delay" value="1.0" />
+    <param name="startup_delay" value="2.0" />
+
+    <param name="enable_track_end_qr_reverse" value="true" />
+    <param name="track_end_reverse_speed" value="0.12" />
+    <param name="track_end_reverse_duration" value="2.0" />
+    <param name="track_end_qr_wait_timeout" value="5.0" />
+
+    <param name="control_rate_hz" value="20.0" />
+    <param name="state_publish_period" value="1.0" />
+    <param name="enable_empty_station_timeout" value="true" />
+    <param name="empty_station_timeout" value="3.0" />
+    <param name="max_station_count" value="0" />
+    <param name="reverse_mode_max_stations" value="0" />
+    <param name="auto_start_initial_station" value="true" />
+  </node>
+
+  <include if="$(arg start_track_end_apriltag_detector)" file="$(find agv_camera)/launch/track_end_apriltag.launch">
+    <arg name="video_device" value="$(arg track_end_qr_camera_device)" />
+    <arg name="track_end_tag_id" value="$(arg track_end_tag_id)" />
+    <arg name="visual" value="false" />
+  </include>
+
+  <node if="$(arg start_track_end_qr_detector)"
+        pkg="chassis"
+        type="track_end_qr_detector.py"
+        name="track_end_qr_detector"
+        output="screen">
+    <param name="camera_device" value="$(arg track_end_qr_camera_device)" />
+    <param name="required_text" value="$(arg track_end_qr_required_text)" />
+    <param name="track_end_detected_topic" value="/base/track_end_detected" />
+    <param name="qr_detected_topic" value="/base/track_end_qr_detected" />
+    <param name="qr_text_topic" value="/base/track_end_qr_text" />
+    <param name="scan_rate_hz" value="10.0" />
+  </node>
+</launch>

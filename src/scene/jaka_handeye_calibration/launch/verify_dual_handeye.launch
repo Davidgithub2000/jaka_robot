@@ -1,0 +1,13 @@
+<launch>
+  <include file="$(find jaka_handeye_calibration)/launch/verify_handeye.launch">
+    <arg name="arm" value="left"/>
+    <arg name="samples_file" value="$(env HOME)/jaka_handeye_calibration/left/samples.yaml"/>
+    <arg name="result_file" value="$(env HOME)/jaka_handeye_calibration/left/handeye_result.yaml"/>
+  </include>
+
+  <include file="$(find jaka_handeye_calibration)/launch/verify_handeye.launch">
+    <arg name="arm" value="right"/>
+    <arg name="samples_file" value="$(env HOME)/jaka_handeye_calibration/right/samples.yaml"/>
+    <arg name="result_file" value="$(env HOME)/jaka_handeye_calibration/right/handeye_result.yaml"/>
+  </include>
+</launch>

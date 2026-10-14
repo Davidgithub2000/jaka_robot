@@ -1,0 +1,12 @@
+<launch>
+  <arg name="left_result_file" default="$(env HOME)/jaka_handeye_calibration/left/handeye_result.yaml"/>
+  <arg name="right_result_file" default="$(env HOME)/jaka_handeye_calibration/right/handeye_result.yaml"/>
+
+  <node pkg="jaka_handeye_calibration" type="publish_handeye_tf.py" name="left_handeye_tf" output="screen">
+    <param name="result_file" value="$(arg left_result_file)"/>
+  </node>
+
+  <node pkg="jaka_handeye_calibration" type="publish_handeye_tf.py" name="right_handeye_tf" output="screen">
+    <param name="result_file" value="$(arg right_result_file)"/>
+  </node>
+</launch>

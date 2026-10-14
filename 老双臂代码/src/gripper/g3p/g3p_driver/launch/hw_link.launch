@@ -1,0 +1,6 @@
+<launch>
+    <node pkg="g3p_driver" type="g3p_driver" name="g3p_driver" output="screen" >
+        <param name="port" value="/dev/grip1"/>  <!-- /dev/g3p || /dev/PL2303 -->
+        <param name="sfile" value="/home/nvidia/gripper"/>
+    </node>
+</launch>

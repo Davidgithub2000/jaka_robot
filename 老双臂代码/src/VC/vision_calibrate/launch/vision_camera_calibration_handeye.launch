@@ -1,0 +1,10 @@
+<launch>
+    <node pkg="vision_calibrate" type="calibration_hand_eye.py" name="calibration_hand_eye" output="screen">
+        <param name="isEyeInHand" type="bool" value="true"/>
+        <param name="camera_intrinsic_path" value="$(find vision_calibrate)/config/intrinsic_calibration.yaml"/>
+        <param name="eye_in_hand_path" value="$(find vision_calibrate)/config/eyeInHand_calibration.yaml"/>
+        <param name="eye_to_hand_path" value="$(find vision_calibrate)/config/eyeToHand_calibration.yaml"/>  
+        <param name="camera_handeye_images_path" value="$(find vision_calibrate)/config/camera_handeye_images/"/>
+    </node>
+
+</launch>

@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="vision_calibrate" type="camera_calibrate.py" name="camera_calibrate" output="screen">
+        <param name="camera_intrinsic_path" value="$(find vision_calibrate)/config/intrinsic_calibration.yaml"/>
+        <param name="camera_intrinsic_images_path" value="$(find vision_calibrate)/config/intrinsic_calibration_images/"/>
+    </node>
+
+</launch>

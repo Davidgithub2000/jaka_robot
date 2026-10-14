@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot name="dual_jaka_zu5" xmlns:xacro="http://wiki.ros.org/xacro">
+
+  <xacro:include filename="$(find jaka_description)/urdf/jaka_zu5/dual_arm_body.xacro" />
+  <xacro:include filename="$(find jaka_description)/urdf/jaka_zu5/l_arm_body.xacro" />
+  <xacro:include filename="$(find jaka_description)/urdf/jaka_zu5/r_arm_body.xacro" />
+
+  <!-- Macro for inertia matrix -->
+  <xacro:macro name="sphere_inertial_matrix" params="m r">
+    <inertial>
+      <mass value="${m}" />
+        <inertia ixx="${2*m*r*r/5}" ixy="0" ixz="0" iyy="${2*m*r*r/5}" iyz="0"  izz="${2*m*r*r/5}" />
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertial_matrix" params="m r h">
+    <inertial>
+      <mass value="${m}" />
+        <inertia ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0" iyy="${m*(3*r*r+h*h)/12}" iyz = "0" izz="${m*r*r/2}" /> 
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="box_inertial_matrix" params="m w h d">
+    <inertial>
+      <mass value="${m}" />
+        <inertia ixx="${m*(h*h+d*d)/12}" ixy = "0" ixz = "0" iyy="${m*(w*w+d*d)/12}" iyz = "0" izz="${m*(w*w+h*h)/12}" /> 
+    </inertial>
+  </xacro:macro> 
+
+  <!-- DUAL ZU5 -->
+  <link name="world" />
+
+  <joint name="world_joint" type="fixed">
+      <parent link="world" />
+      <child link = "base_footprint" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+  
+  <link name="base_footprint" > 
+<!--
+    <xacro:box_inertial_matrix m="200" w ="1" h="0.01" d="1" />
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size = "1 1 0.01" />
+      </geometry>
+      <material name="" />
+    </visual>
+    <collision>
+        <geometry>
+          <box size="0 0 0"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+      </collision>
+-->
+    </link >
+
+  <xacro:dual_arm_body body_prefix = "arm_body">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:dual_arm_body>
+
+  <xacro:l_arm_body parent_prefix = "arm_body_link">
+    <origin xyz="0 0.149 0.65" rpy="-1.047 3.1415926 0" />
+  </xacro:l_arm_body>
+
+  <xacro:r_arm_body parent_prefix = "arm_body_link">
+    <origin xyz="0 -0.149 0.65" rpy="1.047 3.1415926 0" />
+  </xacro:r_arm_body>
+
+</robot>

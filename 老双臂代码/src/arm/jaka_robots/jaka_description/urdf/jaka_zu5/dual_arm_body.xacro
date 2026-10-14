@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="dual_arm_body">
+  <xacro:macro name="dual_arm_body" params="body_prefix *joint_pose">
+    <link name="${body_prefix}_link">
+        <inertial>
+          <origin
+            xyz="0.0023805 -8.69209997657022E-09 0.38265"
+            rpy="0 0 0" />
+          <mass
+            value="26.908" />
+          <inertia
+            ixx="1.9969"
+            ixy="5.78330000000082E-06"
+            ixz="-0.013305"
+            iyy="1.9121"
+            iyz="-9.59990001016968E-08"
+            izz="0.25121" />
+        </inertial>
+        <visual>
+          <origin
+            xyz="0 0 0"
+            rpy="1.5707963267949 0 0" />
+          <geometry>
+            <mesh
+              filename="package://jaka_description/meshes/dual_arm_body.STL" />
+          </geometry>
+          <material
+            name="">
+            <color rgba="1 1 1 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin xyz="0 0 0" rpy="1.5707963267949 0 0" />
+          <geometry>
+            <mesh
+              filename="package://jaka_description/meshes/dual_arm_body.STL" />
+          </geometry>
+        </collision>
+    </link>
+
+    <joint name="${body_prefix}_joint" type="fixed">
+      <xacro:insert_block name="joint_pose"/>
+      <parent link="base_footprint" />
+      <child link = "${body_prefix}_link" />
+    </joint>
+
+    <gazebo reference="${body_prefix}_link">
+      <material>Gazebo/Green</material>
+      <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+  </xacro:macro>
+</robot>

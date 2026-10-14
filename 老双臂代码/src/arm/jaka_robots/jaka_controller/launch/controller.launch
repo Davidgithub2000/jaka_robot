@@ -1,0 +1,25 @@
+<!-- <launch>
+
+  <node pkg="jaka_controller" type="jaka_controller" name="jaka_controller" output="screen" >
+	<rosparam file="$(find jaka_bringup)/config/jaka.yaml" command="load" />
+  </node>
+
+</launch> -->
+
+<launch>
+    <!-- 启动第一个jaka_controller实例 -->
+    <node pkg="jaka_controller" type="jaka_controller" name="jaka_controller_1" output="screen">
+        <rosparam file="$(find jaka_bringup)/config/jaka.yaml" command="load" />
+        <param name="ipv4" value="192.168.3.38" />
+    </node>
+
+    <!-- 启动第二个jaka_controller实例 -->
+    <node pkg="jaka_controller" type="jaka_controller" name="jaka_controller_2" output="screen">
+        <rosparam file="$(find jaka_bringup)/config/jaka.yaml" command="load" />
+        <param name="ipv4" value="192.168.3.39" />
+        <remap from="/robot_driver/move_line" to="/robot_driver/move_line_2"/>
+        <remap from="/robot_driver/move_endpose" to="/robot_driver/move_endpose_2"/>
+        <remap from="/robot_driver/move_joint" to="/robot_driver/move_joint_2"/>
+        <remap from="/robot_driver/stop_move" to="/robot_driver/stop_move_2"/>
+    </node>
+</launch>

@@ -1,0 +1,7 @@
+<launch>
+
+  	<include file="$(find jaka_feedback)/launch/feedback.launch" />
+
+	<include file="$(find jaka_controller)/launch/controller.launch" />
+
+</launch>

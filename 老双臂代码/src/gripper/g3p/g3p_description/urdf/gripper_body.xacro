@@ -1,0 +1,286 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="gripper_body">
+  <xacro:macro name="gripper_body" params="parent_prefix *joint_pose">
+
+  <link name="gripper_base_link">
+    <inertial>
+      <origin xyz="9.76421490710141E-17 0.000265648601089265 0.0461524278849085" rpy="0 0 0" />
+      <mass value="0.79116187380842" />
+      <inertia ixx="0.00053718861290841" ixy="4.00932740511828E-07" ixz="2.65873212245865E-18" iyy="0.000542127995100117" iyz="-6.49165503557269E-06"
+ izz="0.000294143440148547" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/gripper_base_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.501960784313725 0.501960784313725 0.501960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/gripper_base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="gripper_base_joint" type="fixed">
+    <xacro:insert_block name="joint_pose"/>
+    <parent link="${parent_prefix}" />
+    <child link="gripper_base_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+
+  <link name="tray_link">
+    <inertial>
+      <origin xyz="5.36047598906076E-15 0.00232707405513537 -1.38049714225429E-15" rpy="0 0 0" />
+      <mass
+        value="0.0821356394304339" />
+      <inertia ixx="4.33734561455872E-05" ixy="-3.94177937836002E-19" ixz="-6.32677237213812E-18" iyy="8.53098098578309E-05" iyz="7.77072176014044E-20"
+ izz="4.33734561455823E-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/tray_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.309803921568627 0.309803921568627 0.309803921568627 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/tray_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="tray_joint" type="prismatic">
+    <origin xyz="0 -0.01131 0" rpy="0 0 -3.1416" />
+    <parent link="gripper_base_link" />
+    <child link="tray_link" />
+    <axis xyz="0 1 0" />
+    <limit effort="20" lower="0" upper="0.011" velocity="1"/>
+  </joint>
+
+  <link name="pull_1_link">
+    <inertial>
+      <origin xyz="-1.52655665885959E-16 -0.0269999999999995 8.31906186047319E-17" rpy="0 0 0" />
+      <mass value="0.0201505664052889" />
+      <inertia ixx="6.78250384182504E-06" ixy="-1.01288266007118E-21" ixz="6.95830282202121E-24" iyy="1.6363439918366E-07" iyz="5.30168717822282E-22"
+ izz="6.73119886601895E-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/pull_1_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/pull_1_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="pull_1_joint" type="continuous">
+    <origin xyz="0 0.008 0.045" rpy="-1.5708 -1.5399 -1.5708" />
+    <parent link="tray_link" />
+    <child link="pull_1_link" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <link name="finger_1_link">
+    <inertial>
+      <origin xyz="0.00327414395384911 -0.0301543813292435 -1.41874144101929E-06" rpy="0 0 0" />
+      <mass value="0.197385673719982" />
+      <inertia ixx="9.17016926099929E-05" ixy="-3.00617082135941E-07" ixz="-4.33370258341503E-09" iyy="3.08346654721484E-05" iyz="1.86016117378021E-09"
+ izz="0.000104312549244833" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/finger_1_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/finger_1_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="finger_1_joint" type="continuous">
+    <origin xyz="0 -0.054 0" rpy="3.1416 0 -2.9699" />
+    <parent link="pull_1_link" />
+    <child link="finger_1_link" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <link name="pull_2_link">
+    <inertial>
+      <origin xyz="-1.45716771982052E-16 -0.0269999999999995 3.65158880237609E-18" rpy="0 0 0" />
+      <mass value="0.0201505664052889" />
+      <inertia ixx="6.78250384182505E-06" ixy="-4.25998015464809E-22" ixz="1.85407384735343E-22" iyy="1.63634399183661E-07" iyz="1.11009017080159E-22"
+ izz="6.73119886601897E-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/pull_2_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/pull_2_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="pull_2_joint" type="continuous">
+    <origin xyz="-0.038971 0.008 -0.0225" rpy="0.017809 0.52332 -3.106" />
+    <parent link="tray_link" />
+    <child link="pull_2_link" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <link name="finger_2_link">
+    <inertial>
+      <origin xyz="0.00327414296378778 -0.0301543797316594 -1.41871722065772E-06" rpy="0 0 0" />
+      <mass value="0.197385668441477" />
+      <inertia ixx="9.1701680956914E-05" ixy="-3.00626235260301E-07" ixz="-4.33372294698928E-09" iyy="3.08346643757593E-05" iyz="1.86039036497011E-09"
+ izz="0.00010431253658477" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/finger_2_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/finger_2_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="finger_2_joint" type="continuous">
+    <origin xyz="0 -0.054 0" rpy="3.1416 0 -2.9699" />
+    <parent link="pull_2_link" />
+    <child link="finger_2_link" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <link name="pull_3_link">
+    <inertial>
+      <origin xyz="-1.45716771982052E-16 -0.0269999999999995 -3.74010017068638E-18" rpy="0 0 0" />
+      <mass value="0.0201505664052889" />
+      <inertia ixx="6.78250384182505E-06" ixy="9.88067241694592E-22" ixz="3.9060211906152E-23" iyy="1.6363439918366E-07" iyz="-1.0661159051125E-21"
+ izz="6.73119886601896E-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/pull_3_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/pull_3_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="pull_3_joint" type="continuous">
+    <origin xyz="0.038971 0.008 -0.0225" rpy="3.1238 0.52332 -0.035624" />
+    <parent link="tray_link" />
+    <child link="pull_3_link" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <link name="finger_3_link">
+    <inertial>
+      <origin xyz="0.0032741429650996 -0.0301543797316852 -1.41877574984922E-06" rpy="0 0 0" />
+      <mass value="0.197385668441743" />
+      <inertia ixx="9.17016809557109E-05" ixy="-3.00626219152139E-07" ixz="-4.33368283713442E-09" iyy="3.08346643755567E-05" iyz="1.85988448365923E-09"
+ izz="0.000104312536585606" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/finger_3_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://g3p_description/meshes/finger_3_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="finger_3_joint" type="continuous">
+    <origin xyz="0 -0.054 0" rpy="3.1416 0 -2.9699" />
+    <parent link="pull_3_link" />
+    <child link="finger_3_link" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <!-- Transmissions for ROS Control -->
+  <xacro:macro name="transmission_block" params="joint_name">
+    <transmission name="${joint_name}_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${joint_name}">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${joint_name}_motor">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+  
+  <xacro:transmission_block joint_name="pull_1_joint"/>
+  <xacro:transmission_block joint_name="pull_2_joint"/>
+  <xacro:transmission_block joint_name="pull_3_joint"/>
+  <xacro:transmission_block joint_name="finger_1_joint"/>
+  <xacro:transmission_block joint_name="finger_2_joint"/>
+  <xacro:transmission_block joint_name="finger_3_joint"/>	
+
+  <!-- ros_control plugin -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/gripper</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+
+  </xacro:macro>
+</robot>

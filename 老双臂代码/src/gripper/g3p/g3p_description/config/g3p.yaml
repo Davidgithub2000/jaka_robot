@@ -1,0 +1,2 @@
+joint_names: ['tray_joint', 'pull_1_joint', 'finger_1_joint', 'pull_2_joint', 'finger_2_joint', 'pull_3_joint', 'finger_3_joint' ]
+joint_position: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0]

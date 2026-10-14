@@ -1,0 +1,6 @@
+<launch>
+
+  <node name="scenario" pkg="scenario" type="scenario" output="screen">
+     <rosparam command="load" file="$(find scenario)/param/points.yaml" />
+  </node>
+</launch>

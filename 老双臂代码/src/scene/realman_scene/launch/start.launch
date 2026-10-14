@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="realman_scene" pkg="realman_scene" type="realman_scene" output="screen" />
+  
+</launch>

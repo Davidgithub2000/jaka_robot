@@ -1,0 +1,51 @@
+<launch>
+  <!-- <include file="$(find g3p_driver)/launch/hw_link.launch" /> -->
+
+    <node pkg="realman_scene" type="robot_vision_wrapper_scene_eye_in_hand_test.py" name="robot_vision_wrapper" output="screen">
+        <!-- 设置视觉服务器地址参数：ip，port -->
+        <param name="vision_server_ip" type="str" value="192.168.1.66"/>
+        <param name="vision_server_port" type="int" value="2002"/>
+        <param name="gripper_server_ip" type="str" value="192.168.1.88"/>
+        <param name="gripper_server_port" type="int" value="2000"/>
+        <param name="isEyeInHand" type="bool" value="true"/>
+
+        <!-- 抓取点位置在XYZ方向的补偿，单位：mm -20, 95, -160 -->
+        <param name="object_compensation_XYZ" type="str" value="0, -30, 0"/>
+        <!-- 抓取点姿态设置，将use_input_RPY设置为true时，将使用object_rotate_RPY参数值，单位：弧度；设置为false时，将使用视觉服务器反馈的值 -->
+        <param name="use_input_RPY" type="bool" value="true"/>
+        <param name="object_rotate_RPY" type="str" value="0,0,0"/>
+
+        <!-- 朝向：上        0， 0， 0
+        朝向：右上45度  1.57, -0.79, 0
+        朝向：右        0，-90， 90 -->
+
+        <!-- 抓取逼近点（抓取前进入位置及抓取后退出位置）设置，其值为相对于抓取点在XYZRPY方向的偏移量，单位：mm，度 -->
+        <param name="object_pre_pose_offset_XYZRPY" type="str" value="0, 0, 0, 0, 0, 0"/>
+
+        <!-- 抓取完成后自动放置功能设置，将auto_place设置为true时，将在抓取后自动进行放置动作。 -->
+        <param name="auto_place" type="bool" value="false"/>
+
+        <!-- 过渡点设置，其值为六个轴的关节角度，单位：弧度。
+        抓取动作流程： pick_pre_pose_1 -> pick_pre_pose_2
+                    -> 抓取逼近点 -> 抓取点 -> 夹爪闭合 -> 抓取逼近点
+                    -> pick_late_pose_1 -> pick_late_pose_2 -> 夹爪张开
+                    -> place_late_pose_1 -> place_late_pose_2
+			89.51701, 76.03602, -122.30022, 96.31108, 270.13847, 18.72564
+			-10.17046, 111.77608, -90.98123, 66.58494, 91.28869, 25.61639
+			-112.5,514.6,281.2,38.4,-12,-166
+			298,102,463,14,-8,112
+			57.4655, 116.76868, -144.57666, 108.89535, 275.34402, 18.73139
+
+		g3p :  83.27581, 133.30448, -87.75125, -20.04295, 262.01898, 88.27348
+		-19.93181, 104.13166, -88.93022, 75.17625, 91.41778, 25.62188
+		6.36671, 165.63107, -126.63049, 44.20716, 210.44297, -22.29499
+        如果将过渡点关节值设置为"-1, -1, -1, -1, -1, -1"，则表示不使用该过渡点 -->
+        <param name="pick_pre_pose_1_joint" type="str" value="54.55412, 152.2868, -121.44975, 14.20762, 245.47494, 58.19154"/>
+        <param name="pick_pre_pose_2_joint" type="str" value="-21.74524, 129.56844, -108.9631, 72.05476, 217.44126, 58.19291"/>
+        <param name="pick_late_pose_1_joint" type="str" value="-1, -1, -1, -1, -1, -1"/>
+        <param name="pick_late_pose_2_joint" type="str" value="-1, -1, -1, -1, -1, -1"/>
+        <param name="place_late_pose_1_joint" type="str" value="-67.75397, 78.06566, -38.09524, 5.5901, -83.26099, -46.22898"/>
+        <param name="place_late_pose_2_joint" type="str" value="-72.51791, 132.45554, -104.7287, -11.85138, -90.54012, -46.21937"/>
+ <remap from = "vision_target" to ="vision_target1"/>
+   </node>
+</launch>

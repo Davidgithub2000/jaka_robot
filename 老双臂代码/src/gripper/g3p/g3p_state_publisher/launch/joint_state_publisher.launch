@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="g3p_state_publisher" type="g3p_state_publisher" name="g3p_state_publisher" output="screen" >
+        <rosparam file="$(find g3p_description)/config/g3p.yaml" command="load" />
+    </node>
+</launch>

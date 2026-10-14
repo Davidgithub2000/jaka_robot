@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+  <param name="robot_description" command="$(find xacro)/xacro 
+        --inorder $(find jaka_description)/urdf/jaka_zu3/jaka_zu3.xacro" />
+
+  <!-- 运行joint_state_publisher节点，发布机器人的关节状态  -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+    
+  <!-- 运行robot_state_publisher节点，发布tf  -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <node name="rviz" pkg="rviz" type="rviz" 
+    args="-d $(find jaka_description)/rviz/jaka_zu3_urdf.rviz"
+    required="true" />
+
+</launch>
+

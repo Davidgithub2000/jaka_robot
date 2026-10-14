@@ -1,0 +1,30 @@
+<!-- <launch>
+
+  <node pkg="jaka_feedback" type="jaka_feedback" name="jaka_feedback" output="screen" >
+	<rosparam file="$(find jaka_bringup)/config/jaka.yaml" command="load" />
+	<remap from="/robot_driver/tool_point" to="/tool_point"/>
+  </node>
+
+</launch> -->
+
+
+<launch>
+    <!-- 启动第一个jaka_feedback实例 -->
+    <node pkg="jaka_feedback" type="jaka_feedback" name="jaka_feedback_1" output="screen">
+        <rosparam file="$(find jaka_bringup)/config/jaka.yaml" command="load" />
+        <param name="ipv4" value="192.168.3.38" />
+        <remap from="/robot_driver/tool_point" to="/tool_point"/>
+    </node>
+
+    <!-- 启动第二个jaka_feedback实例 -->
+    <node pkg="jaka_feedback" type="jaka_feedback" name="jaka_feedback_2" output="screen">
+        <rosparam file="$(find jaka_bringup)/config/jaka.yaml" command="load" />
+        <param name="ipv4" value="192.168.3.39" />
+        <remap from="/robot_driver/tool_point" to="/tool_point_2"/>
+        <remap from="/robot_driver/joint_states" to="/robot_driver/joint_states_2"/>
+        <remap from="/robot_driver/robot_state" to="/robot_driver/robot_state_2"/>
+        <remap from="/robot_driver/end_pose" to="/robot_driver/end_pose_2"/>
+    </node>
+</launch>
+
+

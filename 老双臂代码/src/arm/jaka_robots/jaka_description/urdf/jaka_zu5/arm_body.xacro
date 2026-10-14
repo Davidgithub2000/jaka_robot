@@ -1,0 +1,374 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="arm_body">
+  <xacro:macro name="arm_body" params="parent_prefix *joint_pose">
+  
+  <xacro:arg name="default_velocity" default="1" /> 
+
+  <link name="arm_base_link">
+    <inertial>
+      <origin
+        xyz="0.00096495 6.33210000011972E-08 0.019553"
+        rpy="0 0 0" />
+      <mass
+        value="0.5146" />
+      <inertia
+        ixx="0.00062137"
+        ixy="-1.25310000000002E-08"
+        ixz="3.2162E-06"
+        iyy="0.00086635"
+        iyz="1.01950000029785E-10"
+        izz="0.0013528" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="arm_base_joint" type="fixed">
+    <xacro:insert_block name="joint_pose"/>
+    <parent link="${parent_prefix}" />
+    <child link="arm_base_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+
+  <link name="shoulder_pan_link">
+    <inertial>
+      <origin
+        xyz="5.1683E-07 -0.0033223 -0.001511"
+        rpy="0 0 0" />
+      <mass
+        value="1.9282" />
+      <inertia
+        ixx="0.0056433"
+        ixy="5.7032E-08"
+        ixz="-6.2225E-08"
+        iyy="0.0054898"
+        iyz="2.0134999999999E-06"
+        izz="0.0038887" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="shoulder_pan_joint" type="continuous">
+    <origin xyz="0 0 0.12015" rpy="0 0 0" />
+    <parent link="arm_base_link" />
+    <child link="shoulder_pan_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3" upper="3" effort="49" velocity="$(arg default_velocity)" />
+  </joint>
+
+  <link name="shoulder_lift_link">
+    <inertial>
+      <origin
+        xyz="-0.215 -2.05689999912349E-08 0.14315"
+        rpy="0 0 0" />
+      <mass
+        value="5.8409" />
+      <inertia
+        ixx="0.013221"
+        ixy="4.5164E-07"
+        ixz="-4.5411E-08"
+        iyy="0.20339"
+        iyz="-3.02220000002149E-08"
+        izz="0.19988" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="shoulder_lift_joint" type="continuous">
+    <origin xyz="0 0 0" rpy="1.57079 0 0" />
+    <parent link="shoulder_pan_link" />
+    <child link="shoulder_lift_link" />
+    <axis xyz="0 0 -1" />
+    <limit lower="-3" upper="3" effort="49" velocity="$(arg default_velocity)" />
+  </joint>
+
+  <link name="elbow_link">
+    <inertial>
+      <origin
+        xyz="-0.19088 -3.84559999999352E-07 0.010588"
+        rpy="0 0 0" />
+      <mass
+        value="2.3018" />
+      <inertia
+        ixx="0.0028116"
+        ixy="2.56400000000176E-07"
+        ixz="-0.0028806"
+        iyy="0.053035"
+        iyz="-6.48900000004372E-09"
+        izz="0.052321" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="elbow_joint" type="continuous">
+    <origin xyz="-0.430 0 0" rpy="0 0 0" />
+    <parent link="shoulder_lift_link" />
+    <child link="elbow_link" />
+    <axis xyz="0 0 -1" />
+    <limit lower="-3" upper="3" effort="49" velocity="$(arg default_velocity)" />
+  </joint>
+
+  <link name="wrist_1_link">
+    <inertial>
+      <origin
+        xyz="4.1023E-07 -0.0057996 -0.0026718"
+        rpy="0 0 0" />
+      <mass
+        value="0.70739" />
+      <inertia
+        ixx="0.0011791"
+        ixy="5.5084E-09"
+        ixz="1.4807E-09"
+        iyy="0.00066568"
+        iyz="-1.0639E-05"
+        izz="0.0011425" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_4.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="wrist_1_joint" type="continuous">
+    <origin xyz="-0.3685 0 0.114" rpy="0 0 0" />
+    <parent link="elbow_link" />
+    <child link="wrist_1_link" />
+    <axis xyz="0 0 -1" />
+    <limit lower="-3" upper="3" effort="11" velocity="$(arg default_velocity)" />
+  </joint>
+
+  <link name="wrist_2_link">
+    <inertial>
+      <origin
+        xyz="-3.0743E-08 -0.0028896 -0.0023422"
+        rpy="0 0 0" />
+      <mass
+        value="0.80693" />
+      <inertia
+        ixx="0.001655"
+        ixy="1.0299E-08"
+        ixz="-1.2235E-08"
+        iyy="0.0007447"
+        iyz="-5.79109999999995E-06"
+        izz="0.0016178" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_5.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="wrist_2_joint" type="continuous">
+    <origin xyz="0 -0.1135 0" rpy="1.57079 3.1415926 0" />
+    <parent link="wrist_1_link" />
+    <child link="wrist_2_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3" upper="3" effort="11" velocity="$(arg default_velocity)" />
+  </joint>
+
+  <link name="wrist_3_link">
+    <inertial>
+      <origin
+        xyz="-2.7624E-05 1.34819999999987E-05 -0.021245"
+        rpy="0 0 0" />
+      <mass
+        value="0.1805" />
+      <inertia
+        ixx="9.1533E-05"
+        ixy="-8.8776E-08"
+        ixz="8.1265E-08"
+        iyy="9.2197E-05"
+        iyz="1.05880000000003E-07"
+        izz="0.00014442" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_description/meshes/jaka_zu5_meshes/link_6.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="wrist_3_joint" type="continuous">
+    <origin xyz="0 0.107 0" rpy="-1.57079 0 0" />
+    <parent link="wrist_2_link" />
+    <child link="wrist_3_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3" upper="3" effort="11" velocity="$(arg default_velocity)" />
+  </joint>
+
+
+  <!-- Transmissions for ROS Control -->
+  <xacro:macro name="transmission_block" params="joint_name">
+    <transmission name="${joint_name}_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${joint_name}">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${joint_name}_motor">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+  
+  <xacro:transmission_block joint_name="shoulder_pan_joint"/>
+  <xacro:transmission_block joint_name="shoulder_lift_joint"/>
+  <xacro:transmission_block joint_name="elbow_joint"/>
+  <xacro:transmission_block joint_name="wrist_1_joint"/>
+  <xacro:transmission_block joint_name="wrist_2_joint"/>
+  <xacro:transmission_block joint_name="wrist_3_joint"/>	
+
+	<!-- ros_control plugin -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/jaka_zu5</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+
+  </xacro:macro>
+</robot>
